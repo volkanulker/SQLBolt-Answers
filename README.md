@@ -193,3 +193,118 @@ INNER JOIN boxoffice
 ```
 SELECT title FROM movies WHERE year % 2 = 0;
 ```
+
+
+# Lesson 10: Queries with aggregates (Pt. 1)
+1.Find the longest time that an employee has been at the studio
+SELECT SUM(years_employed) AS has_been FROM employees
+GROUP BY name
+ORDER BY has_been desc
+limit 1 ;
+
+
+2.For each role, find the average number of years employed by employees in that role
+SELECT Role, AVG(Years_employed) FROM employees
+GROUP BY role;
+
+
+3.Find the total number of employee years worked in each building
+SELECT building,SUM(Years_employed) FROM employees
+GROUP BY Building;
+
+
+# Lesson 11: Queries with aggregates (Pt. 2)
+1.Find the number of Artists in the studio (without a HAVING clause)
+SELECT COUNT(*) FROM employees
+WHERE Role = "Artist";
+
+
+2.Find the number of Employees of each role in the studio
+SELECT Role,COUNT(*) FROM employees
+GROUP BY Role;
+
+
+3.Find the total number of years employed by all Engineers
+SELECT SUM(Years_employed) FROM employees
+GROUP BY Role
+HAVING Role = 'Engineer';
+
+
+# Lesson 12: Order of execution of a Query
+1.Find the number of movies each director has directed
+SELECT Director,COUNT(*) FROM movies
+GROUP BY Director;
+
+
+2.Find the total domestic and international sales that can be attributed to each director
+SELECT Director,SUM(International_sales+ Domestic_Sales) AS Total_Contribution FROM movies
+INNER JOIN Boxoffice ON Boxoffice.Movie_id = Movies.Id
+GROUP BY Director;
+
+# Lesson 13: Inserting rows
+1.Add the studio's new production, Toy Story 4 to the list of movies (you can use any director)
+INSERT INTO Movies
+(Id, Title, Year, Length_minutes)
+VALUES (4, 'Toy Story 4', 'Volkan Ulker', 90);
+
+
+2.Toy Story 4 has been released to critical acclaim! It had a rating of 8.7, and made 340 million domestically and 270 million internationally. Add the record to the BoxOffice table.
+INSERT INTO Boxoffice
+(Movie_id, Rating, Domestic_sales, International_sales)
+VALUES (4, 8.7, 340000000, 270000000);
+
+
+# Lesson 14: Updating rows
+1.The director for A Bug's Life is incorrect, it was actually directed by John Lasseter
+SET Director = "John Lasseter"
+WHERE Id = 2;
+2.The year that Toy Story 2 was released is incorrect, it was actually released in 1999
+UPDATE Movies
+SET Year = 1999
+WHERE Id = 3;
+3.Both the title and director for Toy Story 8 is incorrect! The title should be "Toy Story 3" and it was directed by Lee Unkrich
+UPDATE Movies
+SET Title = "Toy Story 3",
+Director = "Lee Unkrich"
+WHERE Title ='Toy Story 8'
+
+
+# Lesson 15: Deleting rows
+1.This database is getting too big, lets remove all movies that were released before 2005.
+DELETE FROM movies
+WHERE Year < 2005;
+2.Andrew Stanton has also left the studio, so please remove all movies directed by him.
+DELETE FROM movies
+WHERE Director = 'Andrew Stanton';
+
+# Lesson 16: Creating tables
+1.Create a new table named Database with the following columns:
+– Name A string (text) describing the name of the database
+– Version A number (floating point) of the latest version of this database
+– Download_count An integer count of the number of times this database was downloaded
+
+CREATE TABLE Database (
+Name TEXT,
+Version FLOAT,
+Download_count INTEGER
+);
+
+
+# Lesson 17: Altering tables
+1.Add a column named Aspect_ratio with a FLOAT data type to store the aspect-ratio each movie was released in.
+ALTER TABLE movies
+ADD Aspect_ratio FLOAT;
+
+
+2.Add another column named Language with a TEXT data type to store the language that the movie was released in. Ensure that the default for this language is English.
+ALTER TABLE movies
+ADD Language TEXT DEFAULT "English";
+
+
+# Lesson 18: Dropping tables
+1.We've sadly reached the end of our lessons, lets clean up by removing the Movies table
+DROP TABLE IF EXISTS Movies;
+
+
+2.And drop the BoxOffice table as well
+DROP TABLE IF EXISTS Boxoffice;
